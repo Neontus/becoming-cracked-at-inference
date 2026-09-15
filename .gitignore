@@ -1,0 +1,11 @@
+.DS_Store
+.env
+.venv/
+__pycache__/
+*.pyc
+
+# Local experiment outputs and profiler traces can be large.
+artifacts/
+profiles/
+wandb/
+
