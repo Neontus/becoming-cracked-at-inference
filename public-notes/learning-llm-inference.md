@@ -5,7 +5,7 @@ date: "2026-09-15"
 updated: "2026-09-15"
 stage: "Orientation"
 order: 0
-draft: false
+draft: true
 tags:
   - inference
   - systems
@@ -47,4 +47,3 @@ exists.
 
 The first technical note will come after I have implemented naive generation and
 can explain exactly where its repeated work comes from.
-
