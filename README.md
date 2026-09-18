@@ -8,6 +8,8 @@ systems that make autoregressive models run.
 ## Repository map
 
 ```text
+src/inference_lab/ implementation code, added gradually as concepts are learned
+tests/             correctness tests and trusted-reference comparisons
 curriculum/       the 16-week roadmap and completion criteria
 notes/sessions/   short, private-by-default work logs
 experiments/      reproducible experiment definitions
@@ -17,10 +19,38 @@ templates/        starting points for session and public notes
 scripts/          note creation, validation, and site publishing helpers
 ```
 
-Code for the inference engine can be added gradually under `engine/`,
-`kernels/`, `scheduler/`, and `kv_cache/` when the curriculum reaches those
-topics. Empty implementation folders are intentionally not scaffolded: their
-shape should emerge from the problems encountered.
+Code for the inference engine belongs under `src/inference_lab/`. Add
+subpackages such as `model`, `engine`, `kernels`, `scheduler`, and `kv_cache`
+only when the curriculum reaches those problems. Their shape should emerge from
+the implementation rather than being guessed in advance.
+
+## Set up and run code
+
+Create an isolated environment and install the repository in editable mode:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install --editable .
+```
+
+Confirm the package runs:
+
+```bash
+python -m inference_lab
+```
+
+Run the correctness tests:
+
+```bash
+python -m unittest discover --start-directory tests
+```
+
+As dependencies become necessary, add them deliberately to `pyproject.toml`
+and document why they are needed. PyTorch, Triton, CUDA tooling, and profiling
+dependencies are intentionally not installed before the curriculum reaches
+them.
 
 ## Start a work session
 
@@ -89,4 +119,3 @@ It does not commit or push anything on your behalf.
 
 The detailed learning sequence lives in [curriculum/roadmap.md](curriculum/roadmap.md).
 The collaboration rules for AI tools live in [AGENTS.md](AGENTS.md).
-

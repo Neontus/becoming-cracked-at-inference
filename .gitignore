@@ -9,3 +9,5 @@ artifacts/
 profiles/
 wandb/
 
+# Raw learning logs are private by default.
+notes/sessions/

@@ -17,6 +17,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install learning package
+        run: python -m pip install --editable .
+      - name: Run tests
+        run: python -m unittest discover --start-directory tests
       - name: Validate publishable Markdown
         run: python3 scripts/check_public_notes.py
-
