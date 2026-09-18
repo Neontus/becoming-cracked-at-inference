@@ -60,7 +60,7 @@ def validate(path: Path) -> list[str]:
 
 def main() -> int:
     failed = False
-    for path in sorted((ROOT / "public-notes").glob("*.md")):
+    for path in sorted((ROOT / "posts").glob("*.md")):
         errors = validate(path)
         if errors:
             failed = True

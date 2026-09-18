@@ -28,13 +28,13 @@ def main() -> int:
         print("Title cannot be empty.", file=sys.stderr)
         return 2
 
-    destination = ROOT / "public-notes" / f"{slug}.md"
+    destination = ROOT / "posts" / f"{slug}.md"
     if destination.exists():
         print(f"Refusing to overwrite {destination.relative_to(ROOT)}", file=sys.stderr)
         return 1
 
     today = date.today().isoformat()
-    template = (ROOT / "templates" / "public-note.md").read_text()
+    template = (ROOT / "scripts" / "templates" / "public-note.md").read_text()
     destination.write_text(template.replace("{{date}}", today).replace("{{title}}", title))
     print(destination.relative_to(ROOT))
     return 0

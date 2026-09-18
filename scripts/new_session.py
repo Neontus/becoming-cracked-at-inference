@@ -28,7 +28,7 @@ def main() -> int:
         print(f"Refusing to overwrite {destination.relative_to(ROOT)}", file=sys.stderr)
         return 1
 
-    template = (ROOT / "templates" / "session-note.md").read_text()
+    template = (ROOT / "scripts" / "templates" / "session-note.md").read_text()
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(template.replace("{{date}}", today).replace("{{topic}}", topic))
     print(destination.relative_to(ROOT))

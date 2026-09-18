@@ -34,6 +34,5 @@ not for the shortest path to working code.
 - Warm up before timing and report the timing method.
 - Record device, dtype, shapes, batch size, sequence lengths, and relevant
   software versions.
-- Keep raw benchmark outputs under `benchmarks/results/` when they are small;
-  otherwise store a summary plus a durable link.
+- Keep large raw outputs in ignored `artifacts/`; commit only small evidence that helps reproduce a result.
 

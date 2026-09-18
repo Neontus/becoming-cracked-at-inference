@@ -8,15 +8,11 @@ systems that make autoregressive models run.
 ## Repository map
 
 ```text
-src/inference_lab/ implementation code, added gradually as concepts are learned
-tests/             correctness tests and trusted-reference comparisons
-curriculum/       the 16-week roadmap and completion criteria
-notes/sessions/   short, private-by-default work logs
-experiments/      reproducible experiment definitions
-benchmarks/       benchmark conventions and results
-public-notes/     polished notes that can be published to neontus.github.io
-templates/        starting points for session and public notes
-scripts/          note creation, validation, and site publishing helpers
+src/inference_lab/ implementation code
+tests/             correctness tests
+posts/             public writing for neontus.github.io
+scripts/           note and publishing helpers
+ROADMAP.md         the learning sequence
 ```
 
 Code for the inference engine belongs under `src/inference_lab/`. Add
@@ -87,14 +83,14 @@ deploys to GitHub Pages whenever `main` is pushed.
 
 ```bash
 ./scripts/publish_to_site.sh \
-  public-notes/kv-cache-from-first-principles.md \
+  posts/kv-cache-from-first-principles.md \
   /path/to/Neontus.github.io
 ```
 
 Then review and commit both repositories:
 
 ```bash
-git add public-notes notes curriculum
+git add posts ROADMAP.md
 git commit -m "Document KV-cache experiment"
 
 cd /path/to/Neontus.github.io
@@ -117,5 +113,5 @@ It does not commit or push anything on your behalf.
 - Every public claim about performance should include the hardware, software
   versions, workload, metric definition, and enough commands to reproduce it.
 
-The detailed learning sequence lives in [curriculum/roadmap.md](curriculum/roadmap.md).
+The detailed learning sequence lives in [ROADMAP.md](ROADMAP.md).
 The collaboration rules for AI tools live in [AGENTS.md](AGENTS.md).

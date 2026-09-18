@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -ne 2 ]]; then
-  echo "Usage: $0 public-notes/<slug>.md /path/to/Neontus.github.io" >&2
+  echo "Usage: $0 posts/<slug>.md /path/to/Neontus.github.io" >&2
   exit 2
 fi
 
@@ -14,8 +14,8 @@ if [[ ! -f "$source_note" ]]; then
   exit 1
 fi
 
-if [[ "$(basename "$(dirname "$source_note")")" != "public-notes" ]]; then
-  echo "Source must be a Markdown file inside public-notes/." >&2
+if [[ "$(basename "$(dirname "$source_note")")" != "posts" ]]; then
+  echo "Source must be a Markdown file inside posts/." >&2
   exit 1
 fi
 
