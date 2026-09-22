@@ -32,6 +32,12 @@ fi
 python3 "$(dirname "$0")/check_public_notes.py"
 mkdir -p "$site_repo/content/writing"
 cp "$source_note" "$site_repo/content/writing/$(basename "$source_note")"
+
+source_assets="$(dirname "$source_note")/assets"
+if [[ -d "$source_assets" ]]; then
+  mkdir -p "$site_repo/public/writing/assets"
+  cp -R "$source_assets/." "$site_repo/public/writing/assets/"
+fi
+
 echo "Published source to $site_repo/content/writing/$(basename "$source_note")"
 echo "Next: run npm run build in the site repository, then review and commit both repositories."
-
