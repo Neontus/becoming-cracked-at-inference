@@ -26,6 +26,10 @@ encourage doing the same rather than only looking at an existing diagram. At a
 high level, mine shows how a prompt moves through GPT-2 to produce its next
 token.
 
+The corresponding code is pinned to
+[the GPT-2 architecture implementation commit](https://github.com/Neontus/becoming-cracked-at-inference/tree/6e21ee0),
+which includes the model structure and its initial correctness tests.
+
 ## A brief walkthrough
 
 - The tokenizer converts the natural-language prompt into token IDs. GPT-2 also
