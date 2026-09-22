@@ -19,7 +19,7 @@ After spending some time watching Andrej Karpathy’s video on
 [reproducing GPT-2](https://www.youtube.com/watch?v=l8pRSuU81PU), I put what I
 learned into a diagram.
 
-![A hand-drawn diagram tracing a prompt through GPT-2 embeddings, Transformer blocks, and next-token selection.](assets/session-1-gpt2-architecture.png)
+![A hand-drawn diagram tracing a prompt through GPT-2 embeddings, Transformer blocks, and next-token selection.](/writing/assets/session-1-gpt2-architecture.png)
 
 Drawing the architecture myself was surprisingly useful, and I strongly
 encourage doing the same rather than only looking at an existing diagram. At a
