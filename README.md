@@ -14,6 +14,7 @@ posts/                       public writing for neontus.github.io
 scripts/                     note and publishing helpers
 ROADMAP.md                   the full learning sequence
 INFERENCE_LEARNING_BRIEF.md  the immediate architecture-to-inference bridge
+RESOURCES.md                 the curated references for each learning stage
 ```
 
 Code for the inference engine belongs under `src/inference_lab/`. Add
@@ -117,4 +118,5 @@ It does not commit or push anything on your behalf.
 The detailed learning sequence lives in [ROADMAP.md](ROADMAP.md).
 The current near-term plan lives in
 [INFERENCE_LEARNING_BRIEF.md](INFERENCE_LEARNING_BRIEF.md).
+The curated source list lives in [RESOURCES.md](RESOURCES.md).
 The collaboration rules for AI tools live in [AGENTS.md](AGENTS.md).

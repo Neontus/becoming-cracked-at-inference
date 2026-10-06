@@ -3,6 +3,9 @@
 This brief defines the next learning step after Session 1. It is an internal
 project guide, not a draft public post.
 
+The accompanying [resource guide](RESOURCES.md) records the references used by
+this plan, including [Alisa's Book of LLMs](https://alisawuffles.notion.site/alisa-s-book-of-llms).
+
 ## Where I am now
 
 I can describe the high-level GPT-2 path:
@@ -154,42 +157,269 @@ prediction before profiling and then explain why measurements agree or differ.
 
 ## Suggested order for the next few sessions
 
+Do not begin a session by opening every resource below. Start a session note,
+write down the questions for that session, use the listed sources in order, and
+return to the code after each source. The learning loop is:
+
+```text
+predict or explain from memory
+→ consult one source
+→ trace or implement in this repository
+→ test the result
+→ explain it again with the source closed
+```
+
 ### Session 2 — Attention and MLP from tensors
 
-- Trace query, key, value, attention-score, attention-output, and MLP shapes.
-- Connect every operation to the corresponding line in `gpt2.py`.
-- Explain why attention mixes tokens while the MLP does not.
+Estimated time: two or three focused hours. Splitting it across two days is
+fine.
+
+#### Learn
+
+1. Watch or read [3Blue1Brown's attention lesson](https://www.3blue1brown.com/lessons/attention/)
+   for the conceptual picture. Focus on what a query asks for, what a key
+   advertises, why their dot product becomes a relevance score, and what the
+   value carries.
+2. Watch Karpathy's
+   [Let's build GPT](https://www.youtube.com/watch?v=kCc8FmEb1nY) from roughly
+   `1:02:00` to `1:37:50`. The most important stretch begins around `1:07:11`
+   with query, key, and value projections. Multi-head attention and the MLP
+   begin around `1:22:01`; residual connections and LayerNorm follow around
+   `1:25:01`.
+3. Use the modern-Transformer and attention material in
+   [Alisa's Book of LLMs](https://alisawuffles.notion.site/alisa-s-book-of-llms)
+   only as a second reference for equations or tensor conventions that remain
+   unclear.
+
+#### Trace in the current implementation
+
+Open `CausalSelfAttention.forward` in `src/inference_lab/gpt2.py`. Use the real
+GPT-2 values `B = 1`, `T = 4`, `C = 768`, and `H = 12`, and write down these
+shapes before running anything:
+
+```text
+x                 (B, T, C)
+qkv               (B, T, 3C)
+q, k, v           (B, T, C)
+q, k, v by head   (B, H, T, C/H)
+attention scores  (B, H, T, T)
+attention output  (B, H, T, C/H)
+joined heads      (B, T, C)
+```
+
+Then check the prediction against `CausalSelfAttention.forward` by temporarily
+printing shapes or by stepping through the function in a small test. Repeat the
+same exercise for `MLP.forward`:
+
+```text
+(B, T, 768) → (B, T, 3072) → GELU → (B, T, 768)
+```
+
+#### Explain
+
+Answer these without the resources open:
+
+- Why is the attention-score matrix `T × T` for every head?
+- Why does `softmax` use the final dimension?
+- What does the causal mask change, and what does it not change?
+- Why are the heads concatenated back to 768 dimensions?
+- Why can attention move information between positions while the MLP cannot?
+- Why do both sublayers return an update that is added to the residual stream?
+
+#### Produce
+
+- A more detailed hand-drawn Transformer-block diagram.
+- A session note containing the complete shape trace and any remaining
+  questions.
+- No optimization code yet.
 
 Finish when I can draw one Transformer block in more detail without referring
-to an existing diagram.
+to an existing diagram and can recover every shape from `B`, `T`, `C`, and
+`H`.
 
 ### Session 3 — From forward pass to naive generation
 
-- Load pretrained weights using trusted glue code.
-- Run one prompt through the model.
-- Write or inspect the naive autoregressive loop.
-- Print sequence lengths and tensor shapes during several decode steps.
+Estimated time: two focused hours after Session 2 is complete.
+
+#### Learn
+
+1. Revisit the generation portion of
+   [Karpathy's GPT-from-scratch video](https://www.youtube.com/watch?v=kCc8FmEb1nY)
+   around `42:14` only to see the outer autoregressive loop.
+2. Read the input, logits, and `past_key_values` portions of the
+   [Hugging Face GPT-2 documentation](https://huggingface.co/docs/transformers/model_doc/gpt2).
+   Ignore caching during the first implementation; notice it only so the later
+   contrast is clear.
+3. Read only the greedy-decoding portion of the
+   [Hugging Face generation guide](https://huggingface.co/docs/transformers/llm_tutorial).
+
+#### Build and inspect
+
+Use trusted glue code to load pretrained GPT-2 weights into the matching local
+modules. Weight loading itself is not the lesson; the important fact is that
+trained tensors are copied into the parameters of the architecture already
+implemented here.
+
+Run one prompt through `GPT.forward` under evaluation and inference modes. For
+the first pass, record:
+
+```text
+input IDs             (B, prompt_T)
+all output logits     (B, prompt_T, vocab_size)
+last-position logits  (B, vocab_size)
+selected token ID     (B, 1)
+next input IDs        (B, prompt_T + 1)
+```
+
+Implement the most obvious loop first: pass the entire growing sequence back
+through the model for each new token. Use greedy `argmax` while testing so the
+same prompt always takes the same path.
+
+#### Compare forward and backward explicitly
+
+- The forward pass uses the current weights to compute activations and logits.
+- The loss, backward pass, gradients, and optimizer update are training work.
+- Inference needs repeated forward passes but none of the gradient or update
+  steps.
+- `model.eval()` changes the behavior of training-dependent layers;
+  `torch.inference_mode()` avoids autograd bookkeeping. They solve different
+  problems and should both appear in the inference path.
+
+#### Produce
+
+- A runnable deterministic generation command.
+- A correctness comparison against Hugging Face for selected logits or a short
+  greedy continuation.
+- A table showing how `T` grows across five decode steps.
+- A sentence identifying the waste: the naive loop recomputes hidden states,
+  keys, and values for tokens it processed on earlier steps.
 
 Finish when I can clearly distinguish a forward pass, a backward pass, prefill,
-and decode.
+and decode, and when the local model generates a trusted deterministic result.
 
 ### Session 4 — Establish the baseline
 
-- Add a small reproducible benchmark harness.
-- Measure prefill and decode separately across a few sequence lengths.
-- Record the experimental setup and make a prediction before timing.
-- Identify exactly which computation the naive loop repeats.
+Estimated time: two or three focused hours. Do not optimize during this
+session.
+
+#### Learn
+
+Read the introduction and basic `Timer` sections of the
+[PyTorch benchmark recipe](https://docs.pytorch.org/tutorials/recipes/recipes/benchmark.html).
+Pay particular attention to warmup and accelerator synchronization. Use the
+inference and performance sections of Alisa's Book of LLMs to connect latency,
+throughput, model memory, and arithmetic work.
+
+#### Define the measurements
+
+- **Prefill latency:** time for the forward pass over the initial prompt.
+- **Time to first token (TTFT):** tokenization plus prefill plus first-token
+  selection, if the benchmark includes the full user-visible path.
+- **Decode latency:** time for one subsequent token step.
+- **Time per output token (TPOT):** average decode time over generated tokens;
+  state whether the first token is excluded.
+- **Throughput:** output tokens per second for the defined request or batch.
+
+Keep low-level model timing separate from end-to-end timing so tokenizer and
+Python overhead do not silently change the question being answered.
+
+#### Benchmark matrix
+
+Start with batch size 1 and greedy decoding. Use a small matrix such as:
+
+```text
+prompt lengths:     8, 32, 128, 512
+generated lengths:  1, 8, 32
+dtype:              record the actual dtype
+device:             record the exact device
+```
+
+Before running it, predict which cases should take longer and why. Warm up,
+repeat each measurement, report a median or distribution rather than one run,
+and record software versions. If using CUDA, synchronize correctly; if using
+CPU or MPS, document the timing method and its limitations.
+
+#### Produce
+
+- A small benchmark harness, not a notebook cell with unrecorded state.
+- A machine-readable result file in ignored `artifacts/` plus a short committed
+  summary if useful.
+- A table separating prefill from decode.
+- A written explanation of the repeated computation visible in the naive loop.
 
 Finish when I trust the measurement process, even if performance is poor.
 
 ### Session 5 — Implement and measure a KV cache
 
-- Add the simplest correct cache before considering paged memory layouts.
-- Test cached output against the naive path.
-- Measure the change in decode time and memory use.
-- Explain the result using tensor shapes and the basic cost model.
+Estimated time: two or three sessions. Correctness comes before speed.
+
+#### Learn
+
+1. Read the [Hugging Face caching explanation](https://huggingface.co/docs/transformers/cache_explanation)
+   through the dynamic-cache tensor shapes.
+2. Return to the `past_key_values` contract in the
+   [GPT-2 documentation](https://huggingface.co/docs/transformers/model_doc/gpt2).
+3. Use the KV-cache and inference sections in Alisa's Book of LLMs as the
+   derivation reference.
+4. Do not read paged-attention implementation details yet.
+
+#### Predict the changed shapes
+
+For a decode step after `T_past` cached tokens, derive:
+
+```text
+new x                (B, 1, C)
+new q, k, v          (B, H, 1, head_dim)
+cached k and v       (B, H, T_past, head_dim)
+combined k and v     (B, H, T_past + 1, head_dim)
+attention scores     (B, H, 1, T_past + 1)
+```
+
+The current token still needs new query, key, and value projections. The cache
+removes the need to recompute earlier tokens' hidden states, keys, and values;
+it does not make attention over the existing context free.
+
+#### Implement in two stages
+
+1. Change attention and block interfaces so each layer can accept past keys and
+   values and return updated ones.
+2. Split generation into prefill, which populates all layer caches, and decode,
+   which passes only the new token plus the cache.
+
+Begin with a simple dynamically growing cache. It may use concatenation and be
+imperfect; preallocation and paging are separate optimizations.
+
+#### Verify before timing
+
+- Compare cached and uncached logits within a justified numerical tolerance at
+  every decode step.
+- Compare the generated greedy token IDs, not just the final decoded string.
+- Test sequence length 1, several decode steps, and the context-length limit.
+- Check every layer's cache shape.
+
+Only after those tests pass should the Session 4 benchmark run against both
+paths.
 
 Finish when I can explain both what the cache saves and what it costs.
+
+## What to do in the very next study block
+
+Do only Session 2, not the entire plan:
+
+1. Create a session note:
+
+   ```bash
+   python3 scripts/new_session.py "attention and MLP tensor shapes"
+   ```
+
+2. Watch the 3Blue1Brown attention lesson.
+3. Watch `1:02:00–1:37:50` of Karpathy's GPT-from-scratch video.
+4. Fill out the `B, T, C, H` shape trace before executing the code.
+5. Verify the trace in `CausalSelfAttention.forward` and `MLP.forward`.
+6. Draw one detailed block and write down the first point that remains unclear.
+
+That is enough for one productive session. Pretrained-weight loading and the
+generation loop begin only after this explanation checkpoint is met.
 
 ## What to defer
 
