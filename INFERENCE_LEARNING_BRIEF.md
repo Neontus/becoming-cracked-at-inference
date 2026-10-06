@@ -190,6 +190,9 @@ fine.
    [Alisa's Book of LLMs](https://alisawuffles.notion.site/alisa-s-book-of-llms)
    only as a second reference for equations or tensor conventions that remain
    unclear.
+4. After the code trace, read sections 2.2.2–2.2.3 of
+   [*Inference Engineering*](https://www.baseten.co/inference-engineering/book/)
+   to place Transformer blocks and attention in the wider inference stack.
 
 #### Trace in the current implementation
 
@@ -252,6 +255,10 @@ Estimated time: two focused hours after Session 2 is complete.
    contrast is clear.
 3. Read only the greedy-decoding portion of the
    [Hugging Face generation guide](https://huggingface.co/docs/transformers/llm_tutorial).
+4. Read section 2.2, “LLM Inference Mechanics,” of
+   [*Inference Engineering*](https://www.baseten.co/inference-engineering/book/)
+   after the naive loop runs. Use it to review the whole inference path, not as
+   implementation instructions.
 
 #### Build and inspect
 
@@ -308,7 +315,9 @@ Read the introduction and basic `Timer` sections of the
 [PyTorch benchmark recipe](https://docs.pytorch.org/tutorials/recipes/recipes/benchmark.html).
 Pay particular attention to warmup and accelerator synchronization. Use the
 inference and performance sections of Alisa's Book of LLMs to connect latency,
-throughput, model memory, and arithmetic work.
+throughput, model memory, and arithmetic work. Then read sections 1.4, 2.4,
+and 4.5 of [*Inference Engineering*](https://www.baseten.co/inference-engineering/book/)
+for metric definitions, bottleneck analysis, and benchmarking practice.
 
 #### Define the measurements
 
@@ -361,7 +370,11 @@ Estimated time: two or three sessions. Correctness comes before speed.
    [GPT-2 documentation](https://huggingface.co/docs/transformers/model_doc/gpt2).
 3. Use the KV-cache and inference sections in Alisa's Book of LLMs as the
    derivation reference.
-4. Do not read paged-attention implementation details yet.
+4. Read section 5.3, “Caching,” of
+   [*Inference Engineering*](https://www.baseten.co/inference-engineering/book/)
+   after the simple cache works, so prefix reuse and cache-aware serving do not
+   distract from the first implementation.
+5. Do not read paged-attention implementation details yet.
 
 #### Predict the changed shapes
 

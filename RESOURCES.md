@@ -31,6 +31,33 @@ was learned.
   to the current experiment, work through its equations, and then close it and
   reproduce the explanation yourself.
 
+## Primary inference-engineering overview
+
+### *Inference Engineering* by Philip Kiely
+
+- Official edition: [read the book online through Baseten Books](https://www.baseten.co/inference-engineering/book/)
+- Publication: Baseten Books, 2026.
+- Role: the project-wide map from model execution to GPU hardware, inference
+  software, optimization techniques, and production serving.
+- Read now:
+  - Chapter 1.4, “Measuring Latency and Throughput,” when defining metrics;
+  - Chapter 2.2, “LLM Inference Mechanics,” after tracing the local GPT-2 code;
+  - Chapter 2.4, “Calculating Inference Bottlenecks,” when beginning the cost
+    model;
+  - Chapter 4.5, “Performance Benchmarking and Load Testing,” before building
+    the benchmark harness.
+- Read later:
+  - Chapter 3 for GPU architecture and memory hierarchy;
+  - Chapter 4 for CUDA, frameworks, inference engines, and profiling;
+  - Chapter 5 for quantization, speculative decoding, caching, parallelism, and
+    disaggregation;
+  - Chapter 7 when the project reaches serving and production concerns.
+- Do not use it as a substitute for implementing the small mechanisms in this
+  repository. Its value right now is showing where the mechanism fits in the
+  larger inference stack.
+- The local PDF is copyrighted and is intentionally not committed to this
+  repository. The official online edition is the shareable project reference.
+
 ## Current phase: architecture to naive inference
 
 ### Attention intuition
