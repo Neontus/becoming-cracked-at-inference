@@ -14,6 +14,7 @@ posts/                       public writing for neontus.github.io
 scripts/                     note and publishing helpers
 ROADMAP.md                   the full learning sequence
 INFERENCE_LEARNING_BRIEF.md  the immediate architecture-to-inference bridge
+EOY_2026_OSS_CURRICULUM.md   the dated path toward an upstream contribution
 RESOURCES.md                 the curated references for each learning stage
 ```
 
@@ -118,5 +119,8 @@ It does not commit or push anything on your behalf.
 The detailed learning sequence lives in [ROADMAP.md](ROADMAP.md).
 The current near-term plan lives in
 [INFERENCE_LEARNING_BRIEF.md](INFERENCE_LEARNING_BRIEF.md).
+The dated October–December 2026 plan toward a meaningful inference-engine
+contribution lives in
+[EOY_2026_OSS_CURRICULUM.md](EOY_2026_OSS_CURRICULUM.md).
 The curated source list lives in [RESOURCES.md](RESOURCES.md).
 The collaboration rules for AI tools live in [AGENTS.md](AGENTS.md).
